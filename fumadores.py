@@ -7,30 +7,31 @@ import random
 ingredientes = {"tabaco": ["papel" , "cerillas"], "cerillas": ["papel", "tabaco"], "papel": ["cerillas", "tabaco"]}
 #semaforos
 semaforoAgente = Semaphore(1)
-semaforoFumador = [Semaphore(0), Semaphore(0), Semaphore(0)]
+semaforoFumador = {"papel": Semaphore(0), "tabaco": Semaphore(0), "cerillas": Semaphore(0)}
 #semaforo para el mutex
 mutex = Semaphore(1)
-
+rondas = 5
+terminate = False
 #funcion agente
 def agente():
-    while True:
-        #semaforo agente
-        semaforoAgente.acquire()
-        #seleccionamos un ingrediente aleatorio
-        ingrediente = random.choice(list(ingredientes.keys()))
-        #imprimimos el ingrediente
-        print("El agente ha puesto " + ingrediente)
-        #semaforo mutex
-        mutex.acquire()
-        #sacamos los ingredientes del diccionario
-        for i in ingredientes[ingrediente]:
-            semaforoFumador[i].release()
-        #liberamos el mutex
-        mutex.release()
+    for _ in range(rondas):
+        global terminate
+        if terminate:
+            break
+        ingrediente1 = random.choice(list(ingredientes.keys()))
+        ingrediente2 = random.choice(list(ingredientes.keys()))
+        print("El agente ha puesto " + ingrediente1 + " y " + ingrediente2)
+        semaforoFumador[ingrediente1].release()
+        semaforoFumador[ingrediente2].release()
+
+    semaforoAgente.release()
+    terminate = True
+    print("El agente ha terminado")
 
 #funcion fumador
 def fumador(id):
-    while True:
+    for _ in range(rondas):
+        semaforoFumador
         #semaforo fumador
         semaforoFumador[id].acquire()
         #imprimimos el ingrediente que ha cogido el fumador
