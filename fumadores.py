@@ -31,19 +31,14 @@ def agente():
 #funcion fumador
 def fumador(id):
     for _ in range(rondas):
-        semaforoFumador
         #semaforo fumador
         semaforoFumador[id].acquire()
-        #imprimimos el ingrediente que ha cogido el fumador
-        print("El fumador " + str(id) + " ha cogido " + list(ingredientes.keys())[id])
-        #imprimimos que esta fumando
-        print("El fumador " + str(id) + " esta fumando")
-        #tiempo de espera
-        time.sleep(2)
-        #imprimimos que ha terminado de fumar
-        print("El fumador " + str(id) + " ha terminado de fumar")
-        #semaforo agente
-        semaforoAgente.release()
+        if terminate:
+            break
+        print("El fumador " + id + " esta fumando")
+        time.sleep(1)
+        print("El fumador " + id + " ha terminado de fumar")
+        semaforoAgente.acquire()
 
 threads = []
 threads.append(Thread(target=agente))
@@ -56,3 +51,4 @@ for thread in threads:
 for thread in threads:
     thread.join()
 
+print("Todos los hilos han terminado")
