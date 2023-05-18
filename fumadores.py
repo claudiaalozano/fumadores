@@ -44,3 +44,14 @@ def fumador(id):
         #semaforo agente
         semaforoAgente.release()
 
+threads = []
+threads.append(Thread(target=agente))
+for ingrediente in ingredientes.keys():
+    threads.append(Thread(target=fumador, args=(ingrediente)))
+
+for thread in threads:
+    thread.start()
+
+for thread in threads:
+    thread.join()
+
