@@ -9,7 +9,7 @@ ingredientes = {"tabaco": ["papel" , "cerillas"], "cerillas": ["papel", "tabaco"
 semaforoAgente = Semaphore(1)
 semaforoFumador = {"papel": Semaphore(0), "tabaco": Semaphore(0), "cerillas": Semaphore(0)}
 #semaforo para el mutex
-mutex = Semaphore(1)
+
 rondas = 5
 terminate = False
 #funcion agente
@@ -29,21 +29,21 @@ def agente():
     print("El agente ha terminado")
 
 #funcion fumador
-def fumador(id):
+def fumador(ingrediente):
     for _ in range(rondas):
         #semaforo fumador
-        semaforoFumador[id].acquire()
+        semaforoFumador[ingrediente].acquire()
         if terminate:
             break
-        print("El fumador " + id + " esta fumando")
+        print("El fumador " + ingrediente + " esta fumando")
         time.sleep(1)
-        print("El fumador " + id + " ha terminado de fumar")
+        print("El fumador " + ingrediente + " ha terminado de fumar")
         semaforoAgente.acquire()
 
 threads = []
 threads.append(Thread(target=agente))
 for ingrediente in ingredientes.keys():
-    threads.append(Thread(target=fumador, args=(ingrediente)))
+    threads.append(Thread(target=fumador, args=(ingrediente,)))
 
 for thread in threads:
     thread.start()
